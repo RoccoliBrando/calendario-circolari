@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendario Circolari – Belluzzi da Vinci</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1f4fd8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Circolari">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>📅 Calendario Circolari e Impegni<small>I.I.S. "Belluzzi da Vinci"</small></h1>
+  <div class="userbox">
+    <label for="userName">Docente / utente:</label>
+    <input id="userName" type="text" placeholder="Nome e cognome (per firmare)">
+  </div>
+</header>
+
+<main>
+  <section class="panel">
+    <div class="toolbar">
+      <button id="prev" aria-label="Mese precedente">◀</button>
+      <h2 id="monthTitle"></h2>
+      <button id="next" aria-label="Mese successivo">▶</button>
+      <button id="today">Oggi</button>
+      <span class="spacer"></span>
+      <button id="exportBtn" title="Scarica un backup JSON">⬇ Esporta</button>
+      <button id="importBtn" title="Carica un backup JSON">⬆ Importa</button>
+      <input type="file" id="importFile" accept="application/json" hidden>
+      <button class="primary" id="newBtn">+ Nuova circolare / impegno</button>
+    </div>
+
+    <div class="filters">
+      <input type="search" id="q" placeholder="🔍 Cerca titolo, numero, testo…">
+      <select id="fCat"><option value="all">Tutte le categorie</option></select>
+      <select id="fAud">
+        <option value="all">Tutti i destinatari</option>
+        <option value="docenti">Docenti</option>
+        <option value="studenti">Studenti</option>
+        <option value="tutti">Tutti</option>
+      </select>
+      <label><input type="checkbox" id="fUnsigned"> Solo da firmare da me</label>
+    </div>
+
+    <div class="grid" id="grid"></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <aside class="panel side">
+    <div class="stats">
+      <div class="stat"><b id="stTot">0</b>Eventi nel mese</div>
+      <div class="stat"><b id="stSign">0</b>Da firmare da me</div>
+    </div>
+    <h3 id="dayTitle"></h3>
+    <div class="sub" id="daySub"></div>
+    <div id="dayList"></div>
+    <button class="primary" id="addDay" style="width:100%;margin-top:6px">+ Aggiungi in questa data</button>
+  </aside>
+</main>
+
+<dialog id="dlg">
+  <form class="dlg" id="form" method="dialog">
+    <h3 id="dlgTitle">Nuova circolare / impegno</h3>
+    <label class="f">Titolo *<input type="text" id="fTitle" required maxlength="140" placeholder="Es. Convocazione Collegio Docenti"></label>
+    <div class="row">
+      <label class="f">N. circolare<input type="text" id="fNum" maxlength="20" placeholder="Es. 87"></label>
+      <label class="f">Categoria *<select id="fCategory" required></select></label>
+    </div>
+    <div class="row">
+      <label class="f">Data inizio *<input type="date" id="fStart" required></label>
+      <label class="f">Data fine (opzionale)<input type="date" id="fEnd"></label>
+    </div>
+    <div class="row">
+      <label class="f">Destinatari *
+        <select id="fAudience" required>
+          <option value="docenti">Docenti</option>
+          <option value="studenti">Studenti</option>
+          <option value="tutti">Tutti</option>
+        </select>
+      </label>
+      <label class="f">Link al PDF (Argo, ecc.)<input type="url" id="fLink" placeholder="https://…"></label>
+    </div>
+    <label class="f">Descrizione<textarea id="fDesc" rows="4" maxlength="1500" placeholder="Dettagli, orari, aule, ordine del giorno…"></textarea></label>
+    <label class="f inline"><input type="checkbox" id="fSign"> Richiede firma per presa visione</label>
+    <div class="dlg-actions">
+      <button type="button" id="cancelBtn">Annulla</button>
+      <button type="submit" class="primary" id="saveBtn">Salva</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast"></div>
+
+<script src="script.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
+</script>
+</body>
+</html>
